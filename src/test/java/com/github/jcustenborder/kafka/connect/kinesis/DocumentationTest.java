@@ -18,10 +18,12 @@ package com.github.jcustenborder.kafka.connect.kinesis;
 import com.github.jcustenborder.kafka.connect.utils.BaseDocumentationTest;
 import com.github.jcustenborder.kafka.connect.utils.config.MarkdownFormatter;
 import org.apache.kafka.connect.data.Schema;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Disabled
 public class DocumentationTest extends BaseDocumentationTest {
   private static final Logger log = LoggerFactory.getLogger(DocumentationTest.class);
 
@@ -33,8 +35,8 @@ public class DocumentationTest extends BaseDocumentationTest {
   @Test
   public void schema() {
     Schema[] schemas = new Schema[]{
-        RecordProcessor.SCHEMA_KINESIS_KEY,
-        RecordProcessor.SCHEMA_KINESIS_VALUE
+        RecordConverter.SCHEMA_KINESIS_KEY,
+        RecordConverter.SCHEMA_KINESIS_VALUE
     };
 
     StringBuilder builder = new StringBuilder();
