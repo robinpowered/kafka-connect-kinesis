@@ -29,11 +29,12 @@ public class RecordConverter {
 
   public static final Schema SCHEMA_KINESIS_KEY;
   public static final Schema SCHEMA_KINESIS_VALUE;
-  static final String FIELD_SEQUENCE_NUMBER = "sequenceNumber";
-  static final String FIELD_APPROXIMATE_ARRIVAL_TIMESTAMP = "approximateArrivalTimestamp";
-  static final String FIELD_DATA = "data";
-  static final String FIELD_PARTITION_KEY = "partitionKey";
-  static final String FIELD_SHARD_ID = "shardId";
+  public static final String FIELD_SEQUENCE_NUMBER = "sequenceNumber";
+  public static final String FIELD_APPROXIMATE_ARRIVAL_TIMESTAMP = "approximateArrivalTimestamp";
+  public static final String FIELD_DATA = "data";
+  public static final String FIELD_PARTITION_KEY = "partitionKey";
+  public static final String FIELD_SHARD_ID = "shardId";
+  public static final String FIELD_STREAM_NAME = "streamName";
 
   static {
 
@@ -89,6 +90,24 @@ public class RecordConverter {
                 .optional()
                 .build()
         )
+        .field(FIELD_SHARD_ID,
+            SchemaBuilder.string()
+                .doc("A shard is a uniquely identified group of data records in a stream. A stream is composed of one " +
+                    "or more shards, each of which provides a fixed unit of capacity. Each shard can support up to 5 " +
+                    "transactions per second for reads, up to a maximum total data read rate of 2 MB per second and up " +
+                    "to 1,000 records per second for writes, up to a maximum total data write rate of 1 MB per second " +
+                    "(including partition keys). The data capacity of your stream is a function of the number of shards " +
+                    "that you specify for the stream. The total capacity of the stream is the sum of the capacities of " +
+                    "its shards.")
+                .optional()
+                .build()
+        )
+        .field(FIELD_STREAM_NAME,
+            SchemaBuilder.string()
+                .doc("The name of the Kinesis stream.")
+                .optional()
+                .build()
+        )
         .build();
   }
 
@@ -98,7 +117,7 @@ public class RecordConverter {
     this.config = config;
   }
 
-  public SourceRecord sourceRecord(Record record) {
+  public SourceRecord sourceRecord(final String streamName, final String shardId, Record record) {
     byte[] data = new byte[record.getData().remaining()];
     record.getData().get(data);
     Struct key = new Struct(RecordConverter.SCHEMA_KINESIS_KEY)
@@ -107,7 +126,9 @@ public class RecordConverter {
         .put(RecordConverter.FIELD_SEQUENCE_NUMBER, record.getSequenceNumber())
         .put(RecordConverter.FIELD_APPROXIMATE_ARRIVAL_TIMESTAMP, record.getApproximateArrivalTimestamp())
         .put(RecordConverter.FIELD_PARTITION_KEY, record.getPartitionKey())
-        .put(RecordConverter.FIELD_DATA, data);
+        .put(RecordConverter.FIELD_DATA, data)
+        .put(RecordConverter.FIELD_STREAM_NAME, streamName)
+        .put(RecordConverter.FIELD_SHARD_ID, shardId);
 
     final Map<String, Object> sourcePartition = ImmutableMap.of(RecordConverter.FIELD_SHARD_ID, this.config.kinesisShardId);
     final Map<String, Object> sourceOffset = ImmutableMap.of(RecordConverter.FIELD_SEQUENCE_NUMBER, record.getSequenceNumber());

@@ -65,7 +65,9 @@ public class RecordConverterTest {
         .put(RecordConverter.FIELD_PARTITION_KEY, expectedPartitionKey)
         .put(RecordConverter.FIELD_DATA, expectedData)
         .put(RecordConverter.FIELD_APPROXIMATE_ARRIVAL_TIMESTAMP, expectedDate)
-        .put(RecordConverter.FIELD_SEQUENCE_NUMBER, expectedSequenceNumber);
+        .put(RecordConverter.FIELD_SEQUENCE_NUMBER, expectedSequenceNumber)
+        .put(RecordConverter.FIELD_SHARD_ID, this.config.kinesisShardId)
+        .put(RecordConverter.FIELD_STREAM_NAME, this.config.kinesisStreamName);
     final Map<String, Object> sourcePartition = ImmutableMap.of(RecordConverter.FIELD_SHARD_ID, SHARD_ID);
     final Map<String, Object> sourceOffset = ImmutableMap.of(RecordConverter.FIELD_SEQUENCE_NUMBER, expectedSequenceNumber);
 
@@ -86,7 +88,7 @@ public class RecordConverterTest {
     record.setPartitionKey(expectedPartitionKey);
     record.setSequenceNumber(expectedSequenceNumber);
 
-    SourceRecord actualRecord = this.recordConverter.sourceRecord(record);
+    SourceRecord actualRecord = this.recordConverter.sourceRecord(this.config.kinesisStreamName, this.config.kinesisShardId, record);
     assertNotNull(actualRecord, "record should not be null.");
     assertSourceRecord(expectedSourceRecord, actualRecord);
   }

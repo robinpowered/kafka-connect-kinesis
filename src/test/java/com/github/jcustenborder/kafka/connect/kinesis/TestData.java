@@ -28,17 +28,17 @@ class TestData {
   public final static String EXPECTED_STREAM_NAME = "adsfasd";
   public final static String EXPECTED_SHARD_ID = "*";
   public final static String EXPECTED_SHARD_01 = "shard-01";
-  final static String expectedPartitionKey = "Testing";
-  final static byte[] expectedData = "Testing data".getBytes(Charsets.UTF_8);
-  final static String expectedSequenceNumber = "34523452";
-  final static Date expectedApproximateArrivalTimestamp = new Date(1491757701123L);
+  public final static String EXPECTED_PARTITION_KEY = "Testing";
+  public final static byte[] EXPECTED_DATA = "Testing data".getBytes(Charsets.UTF_8);
+  public final static String EXPECTED_SEQUENCE_NUMBER = "34523452";
+  public final static Date EXPECTED_APPROXIMATE_ARRIVAL_TIMESTAMP = new Date(1491757701123L);
 
   public static Record record() {
     return new Record()
-        .withApproximateArrivalTimestamp(expectedApproximateArrivalTimestamp)
-        .withData(ByteBuffer.wrap(expectedData))
-        .withPartitionKey(expectedPartitionKey)
-        .withSequenceNumber(expectedSequenceNumber);
+        .withApproximateArrivalTimestamp(EXPECTED_APPROXIMATE_ARRIVAL_TIMESTAMP)
+        .withData(ByteBuffer.wrap(EXPECTED_DATA))
+        .withPartitionKey(EXPECTED_PARTITION_KEY)
+        .withSequenceNumber(EXPECTED_SEQUENCE_NUMBER);
   }
 
   public static Map<String, String> settings() {

@@ -93,7 +93,7 @@ public class KinesisSourceTask extends SourceTask {
       log.trace("poll() - {} record(s) returned from shard {}.", this.config.kinesisShardId);
 
       for (Record record : recordsResult.getRecords()) {
-        SourceRecord sourceRecord = this.recordConverter.sourceRecord(record);
+        SourceRecord sourceRecord = this.recordConverter.sourceRecord(this.config.kinesisStreamName, this.config.kinesisShardId, record);
         records.add(sourceRecord);
       }
 
