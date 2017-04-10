@@ -87,7 +87,7 @@ class KinesisSourceConnectorConfig extends AbstractConfig {
         .define(STREAM_NAME_CONF, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, STREAM_NAME_DOC)
         .define(KINESIS_POSISTION_CONF, ConfigDef.Type.STRING, ShardIteratorType.TRIM_HORIZON.toString(), ValidEnum.of(ShardIteratorType.class), ConfigDef.Importance.MEDIUM, KINESIS_POSISTION_DOC)
         .define(KINESIS_REGION_CONF, ConfigDef.Type.STRING, Regions.US_EAST_1.toString(), ValidEnum.of(Regions.class), ConfigDef.Importance.MEDIUM, KINESIS_REGION_DOC)
-        .define(KINESIS_SHARD_ID_CONF, ConfigDef.Type.STRING, "*", ConfigDef.Importance.HIGH, KINESIS_SHARD_ID_DOC)
+        .define(KINESIS_SHARD_ID_CONF, ConfigDef.Type.STRING, ".*", ConfigDef.Importance.HIGH, KINESIS_SHARD_ID_DOC)
         .define(KINESIS_RECORD_LIMIT_CONF, ConfigDef.Type.INT, 500, ConfigDef.Range.between(1, 10000), ConfigDef.Importance.MEDIUM, KINESIS_RECORD_LIMIT_DOC)
         .define(KINESIS_EMPTY_RECORDS_BACKOFF_MS_CONF, ConfigDef.Type.LONG, 5000L, ConfigDef.Range.between(500, Integer.MAX_VALUE), ConfigDef.Importance.MEDIUM, KINESIS_EMPTY_RECORDS_BACKOFF_MS_DOC)
         .define(KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_CONF, ConfigDef.Type.LONG, 10 * 1000L, ConfigDef.Range.between(500, Integer.MAX_VALUE), ConfigDef.Importance.MEDIUM, KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_DOC);

@@ -26,7 +26,7 @@ import java.util.Map;
 class TestData {
 
   public final static String EXPECTED_STREAM_NAME = "adsfasd";
-  public final static String EXPECTED_SHARD_ID = "*";
+  public final static String EXPECTED_SHARD_ID = ".*";
   public final static String EXPECTED_SHARD_01 = "shard-01";
   public final static String EXPECTED_PARTITION_KEY = "Testing";
   public final static byte[] EXPECTED_DATA = "Testing data".getBytes(Charsets.UTF_8);

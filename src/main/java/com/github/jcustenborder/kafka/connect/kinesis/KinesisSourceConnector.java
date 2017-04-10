@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class KinesisSourceConnector extends SourceConnector {
   private static final Logger log = LoggerFactory.getLogger(KinesisSourceConnector.class);
@@ -72,12 +74,19 @@ public class KinesisSourceConnector extends SourceConnector {
   public List<Map<String, String>> taskConfigs(int maxTasks) {
     List<Map<String, String>> taskConfigs = new ArrayList<>(maxTasks);
 
-    for (Shard shard : this.streamDescription.getShards()) {
-      log.trace("taskConfigs() - Creating task config for shard '{}'", shard.getShardId());
+    Pattern pattern = Pattern.compile(this.config.kinesisShardId, Pattern.CASE_INSENSITIVE);
 
+    for (Shard shard : this.streamDescription.getShards()) {
       Map<String, String> taskConfig = new LinkedHashMap<>(this.settings);
-      taskConfig.put(KinesisSourceConnectorConfig.KINESIS_SHARD_ID_CONF, shard.getShardId());
-      taskConfigs.add(ImmutableMap.copyOf(taskConfig));
+
+      Matcher matcher = pattern.matcher(shard.getShardId());
+      if (matcher.find()) {
+        log.trace("taskConfigs() - Creating task config for shard '{}'", shard.getShardId());
+        taskConfig.put(KinesisSourceConnectorConfig.KINESIS_SHARD_ID_CONF, shard.getShardId());
+        taskConfigs.add(ImmutableMap.copyOf(taskConfig));
+      } else {
+        log.trace("taskConfigs() - Skipping shard '{}' because it does not match '%s'", shard.getShardId(), pattern.pattern());
+      }
     }
 
     return ImmutableList.copyOf(taskConfigs);
