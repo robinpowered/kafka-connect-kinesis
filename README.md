@@ -3,19 +3,33 @@
 This connector is for reading data from [Amazon Kinesis](https://aws.amazon.com/kinesis/) and writing the data to Apache Kafka.
 
 # Configuration
+
 ## KinesisSourceConnector
+
 ```properties
 name=connector1
 tasks.max=1
 connector.class=com.github.jcustenborder.kafka.connect.kinesis.KinesisSourceConnector
+
 # Set these required values
 aws.secret.key.id=
 aws.access.key.id=
+kafka.topic=
+kinesis.stream=
 ```
-| Name              | Description       | Type     | Default | Valid Values | Importance |
-|-------------------|-------------------|----------|---------|--------------|------------|
-| aws.access.key.id | aws.access.key.id | string   |         |              | high       |
-| aws.secret.key.id | aws.secret.key.id | password |         |              | high       |
+
+| Name                                   | Description                                                                                                              | Type     | Default      | Valid Values                                                                                                                                                                                                                                 | Importance |
+|----------------------------------------|--------------------------------------------------------------------------------------------------------------------------|----------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| aws.access.key.id                      | aws.access.key.id                                                                                                        | string   |              |                                                                                                                                                                                                                                              | high       |
+| aws.secret.key.id                      | aws.secret.key.id                                                                                                        | password |              |                                                                                                                                                                                                                                              | high       |
+| kafka.topic                            | The kafka topic to write the data to.                                                                                    | string   |              |                                                                                                                                                                                                                                              | high       |
+| kinesis.stream                         | The Kinesis stream to read from.                                                                                         | string   |              |                                                                                                                                                                                                                                              | high       |
+| kinesis.shard.id                       | The shard of the Kinesis stream to read from. This is a regex which can be used to read all of the shards in the stream. | string   | *            |                                                                                                                                                                                                                                              | high       |
+| kinesis.empty.records.backoff.ms       | The number of milliseconds to backoff when the stream is empty.                                                          | long     | 5000         |                                                                                                                                                                                                                                              | medium     |
+| kinesis.position                       | The position in the stream to reset to if no offsets are stored.                                                         | string   | TRIM_HORIZON | ValidEnum{enum=ShardIteratorType, allowed=[AT_SEQUENCE_NUMBER, AFTER_SEQUENCE_NUMBER, TRIM_HORIZON, LATEST, AT_TIMESTAMP]}                                                                                                                   | medium     |
+| kinesis.record.limit                   | The number of records to read in each poll of the Kinesis shard.                                                         | int      | 500          |                                                                                                                                                                                                                                              | medium     |
+| kinesis.region                         | The AWS region for the Kinesis stream.                                                                                   | string   | US_EAST_1    | ValidEnum{enum=Regions, allowed=[GovCloud, US_EAST_1, US_EAST_2, US_WEST_1, US_WEST_2, EU_WEST_1, EU_WEST_2, EU_CENTRAL_1, AP_SOUTH_1, AP_SOUTHEAST_1, AP_SOUTHEAST_2, AP_NORTHEAST_1, AP_NORTHEAST_2, SA_EAST_1, CN_NORTH_1, CA_CENTRAL_1]} | medium     |
+| kinesis.throughput.exceeded.backoff.ms | The number of milliseconds to backoff when a throughput exceeded exception is thrown.                                    | long     | 10000        |                                                                                                                                                                                                                                              | medium     |
 
 # Data
 
