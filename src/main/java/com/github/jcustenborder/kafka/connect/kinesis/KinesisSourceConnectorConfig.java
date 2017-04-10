@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,6 +18,7 @@ package com.github.jcustenborder.kafka.connect.kinesis;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.kinesis.model.ShardIteratorType;
 import com.github.jcustenborder.kafka.connect.utils.config.ConfigUtils;
 import com.github.jcustenborder.kafka.connect.utils.config.ValidEnum;
@@ -33,27 +34,21 @@ class KinesisSourceConnectorConfig extends AbstractConfig {
   public static final String TOPIC_CONF = "kafka.topic";
 
   public static final String STREAM_NAME_CONF = "kinesis.stream";
-  static final String TOPIC_DOC = "Topic to write the data to";
   public static final String KINESIS_POSISTION_CONF = "kinesis.position";
+  public static final String KINESIS_REGION_CONF = "kinesis.region";
+  public static final String KINESIS_SHARD_ID_CONF = "kinesis.shard.id";
+  public static final String KINESIS_RECORD_LIMIT_CONF = "kinesis.record.limit";
+  public static final String KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_CONF = "kinesis.throughput.exceeded.backoff.ms";
+  public static final String KINESIS_EMPTY_RECORDS_BACKOFF_MS_CONF = "kinesis.empty.records.backoff.ms";
+  static final String TOPIC_DOC = "Topic to write the data to";
   static final String KINESIS_POSISTION_DOC = "Position";
   static final String STREAM_NAME_DOC = "Topic to write the data to";
   static final String AWS_ACCESS_KEY_ID_DOC = "aws.access.key.id";
   static final String AWS_SECRET_KEY_ID_DOC = "aws.secret.key.id";
-
-  public static final String KINESIS_ENDPOINT_CONF = "kinesis.endpoint";
-  static final String KINESIS_ENDPOINT_DOC = "kinesis.endpoint";
-
-
-  public static final String KINESIS_SHARD_ID_CONF = "kinesis.shard.id";
+  static final String KINESIS_REGION_DOC = "kinesis.region";
   static final String KINESIS_SHARD_ID_DOC = "kinesis.shard.id";
-
-  public static final String KINESIS_RECORD_LIMIT_CONF = "kinesis.record.limit";
   static final String KINESIS_RECORD_LIMIT_DOC = "kinesis.record.limit";
-
-  public static final String KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_CONF = "kinesis.throughput.exceeded.backoff.ms";
   static final String KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_DOC = "kinesis.throuput.exceeded.backoff.ms";
-
-  public static final String KINESIS_EMPTY_RECORDS_BACKOFF_MS_CONF = "kinesis.empty.records.backoff.ms";
   static final String KINESIS_EMPTY_RECORDS_BACKOFF_MS_DOC = "kinesis.throuput.exceeded.backoff.ms";
 
 
@@ -62,11 +57,11 @@ class KinesisSourceConnectorConfig extends AbstractConfig {
   public final String kafkaTopic;
   public final String kinesisStreamName;
   public final ShardIteratorType kinesisPosition;
-  public final String kinesisEndpoint;
   public final String kinesisShardId;
   public final int kinesisRecordLimit;
   public final long kinesisThroughputExceededBackoffMs;
   public final long kinesisEmptyRecordsBackoffMs;
+  public final Regions kinesisRegion;
 
   public KinesisSourceConnectorConfig(Map<String, String> parsedConfig) {
     super(config(), parsedConfig);
@@ -75,7 +70,7 @@ class KinesisSourceConnectorConfig extends AbstractConfig {
     this.kafkaTopic = this.getString(TOPIC_CONF);
     this.kinesisStreamName = this.getString(STREAM_NAME_CONF);
     this.kinesisPosition = ConfigUtils.getEnum(ShardIteratorType.class, this, KINESIS_POSISTION_CONF);
-    this.kinesisEndpoint = this.getString(KINESIS_ENDPOINT_CONF);
+    this.kinesisRegion = ConfigUtils.getEnum(Regions.class, this, KINESIS_REGION_CONF);
     this.kinesisShardId = this.getString(KINESIS_SHARD_ID_CONF);
     this.kinesisRecordLimit = this.getInt(KINESIS_RECORD_LIMIT_CONF);
     this.kinesisEmptyRecordsBackoffMs = this.getLong(KINESIS_EMPTY_RECORDS_BACKOFF_MS_CONF);
@@ -89,8 +84,8 @@ class KinesisSourceConnectorConfig extends AbstractConfig {
         .define(TOPIC_CONF, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, TOPIC_DOC)
         .define(STREAM_NAME_CONF, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, STREAM_NAME_DOC)
         .define(KINESIS_POSISTION_CONF, ConfigDef.Type.STRING, ShardIteratorType.TRIM_HORIZON.toString(), ValidEnum.of(ShardIteratorType.class), ConfigDef.Importance.MEDIUM, KINESIS_POSISTION_DOC)
-        .define(KINESIS_ENDPOINT_CONF, ConfigDef.Type.STRING, "kinesis.us-west-2.amazonaws.com", ConfigDef.Importance.MEDIUM, KINESIS_ENDPOINT_DOC)
-        .define(KINESIS_SHARD_ID_CONF, ConfigDef.Type.STRING, ConfigDef.Importance.HIGH, KINESIS_SHARD_ID_DOC)
+        .define(KINESIS_REGION_CONF, ConfigDef.Type.STRING, Regions.US_EAST_1.toString(), ConfigDef.Importance.MEDIUM, KINESIS_REGION_DOC)
+        .define(KINESIS_SHARD_ID_CONF, ConfigDef.Type.STRING, "*", ConfigDef.Importance.HIGH, KINESIS_SHARD_ID_DOC)
         .define(KINESIS_RECORD_LIMIT_CONF, ConfigDef.Type.INT, 500, ConfigDef.Importance.MEDIUM, KINESIS_RECORD_LIMIT_DOC)
         .define(KINESIS_EMPTY_RECORDS_BACKOFF_MS_CONF, ConfigDef.Type.LONG, 5000L, ConfigDef.Importance.MEDIUM, KINESIS_EMPTY_RECORDS_BACKOFF_MS_DOC)
         .define(KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_CONF, ConfigDef.Type.LONG, 10 * 1000L, ConfigDef.Importance.MEDIUM, KINESIS_THROUGHPUT_EXCEEDED_BACKOFF_MS_CONF);

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,6 @@ public class RecordConverter {
   static final String FIELD_DATA = "data";
   static final String FIELD_PARTITION_KEY = "partitionKey";
   static final String FIELD_SHARD_ID = "shardId";
-  private final KinesisSourceConnectorConfig config;
 
   static {
 
@@ -92,6 +91,8 @@ public class RecordConverter {
         )
         .build();
   }
+
+  private final KinesisSourceConnectorConfig config;
 
   public RecordConverter(KinesisSourceConnectorConfig config) {
     this.config = config;

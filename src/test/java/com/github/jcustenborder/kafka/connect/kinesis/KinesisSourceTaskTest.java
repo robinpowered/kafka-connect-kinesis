@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,8 +29,6 @@ import org.apache.kafka.connect.storage.OffsetStorageReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,10 +41,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
 
 public class KinesisSourceTaskTest {
   KinesisSourceTask task;
@@ -68,13 +64,7 @@ public class KinesisSourceTaskTest {
     this.task.kinesisClientFactory = mock(KinesisClientFactory.class);
     when(this.task.kinesisClientFactory.create(any())).thenReturn(this.kinesisClient);
 
-    this.settings = ImmutableMap.of(
-        KinesisSourceConnectorConfig.AWS_ACCESS_KEY_ID_CONF, "adsfasd",
-        KinesisSourceConnectorConfig.AWS_SECRET_KEY_ID_CONF, "adsfasd",
-        KinesisSourceConnectorConfig.STREAM_NAME_CONF, "adsfasd",
-        KinesisSourceConnectorConfig.TOPIC_CONF, "adsfasd",
-        KinesisSourceConnectorConfig.KINESIS_SHARD_ID_CONF, "shard-01"
-    );
+    this.settings = TestData.settings();
     this.config = new KinesisSourceConnectorConfig(this.settings);
 
   }
