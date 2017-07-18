@@ -21,6 +21,7 @@ import com.amazonaws.services.kinesis.model.DescribeStreamResult;
 import com.amazonaws.services.kinesis.model.Shard;
 import com.amazonaws.services.kinesis.model.StreamDescription;
 import com.github.jcustenborder.kafka.connect.utils.VersionUtil;
+import com.github.jcustenborder.kafka.connect.utils.config.Description;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.apache.kafka.common.config.ConfigDef;
@@ -36,6 +37,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Description("The KinesisSourceConnector is a :term:`Source Connector` that is used to pull data from Amazon Kinesis in " +
+    "realtime and persist the data to a Kafka topic.")
 public class KinesisSourceConnector extends SourceConnector {
   private static final Logger log = LoggerFactory.getLogger(KinesisSourceConnector.class);
 

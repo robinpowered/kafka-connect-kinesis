@@ -16,11 +16,12 @@
 package com.github.jcustenborder.kafka.connect.kinesis;
 
 import com.github.jcustenborder.kafka.connect.utils.BaseDocumentationTest;
-import com.github.jcustenborder.kafka.connect.utils.config.MarkdownFormatter;
 import org.apache.kafka.connect.data.Schema;
-import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class DocumentationTest extends BaseDocumentationTest {
   private static final Logger log = LoggerFactory.getLogger(DocumentationTest.class);
@@ -30,19 +31,8 @@ public class DocumentationTest extends BaseDocumentationTest {
     return new String[]{this.getClass().getPackage().getName()};
   }
 
-  @Test
-  public void schema() {
-    Schema[] schemas = new Schema[]{
-        RecordConverter.SCHEMA_KINESIS_KEY,
-        RecordConverter.SCHEMA_KINESIS_VALUE
-    };
-
-    StringBuilder builder = new StringBuilder();
-    for (Schema schema : schemas) {
-      builder.append(MarkdownFormatter.toMarkdown(schema));
-      builder.append('\n');
-    }
-
-    log.info("\n{}", builder);
+  @Override
+  protected List<Schema> schemas() {
+    return Arrays.asList(RecordConverter.SCHEMA_KINESIS_KEY, RecordConverter.SCHEMA_KINESIS_VALUE);
   }
 }
